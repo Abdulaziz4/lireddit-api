@@ -11,6 +11,7 @@ exports.default = {
     dbName: "lireddit",
     type: "postgresql",
     debug: !constants_1.__prod__,
+    allowGlobalContext: true,
     migrations: {
         path: path_1.default.join(__dirname, "./migrations"),
         glob: "!(*.d).{js,ts}",

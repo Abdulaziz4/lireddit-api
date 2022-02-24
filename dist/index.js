@@ -4,14 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@mikro-orm/core");
-const Post_1 = require("./entities/Post");
 const mikro_orm_config_1 = __importDefault(require("./mikro-orm.config"));
+const express_1 = __importDefault(require("express"));
 const main = async () => {
     const orm = await core_1.MikroORM.init(mikro_orm_config_1.default);
     await orm.getMigrator().up();
-    const post = new Post_1.Post();
-    post.title = "First Post";
-    orm.em.nativeInsert(post);
+    const app = (0, express_1.default)();
+    app.get("/", (req, res) => {
+        res.json({ message: "Hello World" });
+    });
+    app.listen(4000, () => {
+        console.log("server started on localhost:4000");
+    });
 };
-main();
+main().catch((err) => {
+    console.error(err);
+});
 //# sourceMappingURL=index.js.map
