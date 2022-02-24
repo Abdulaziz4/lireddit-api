@@ -1,3 +1,6 @@
-.DS_Store
+# Ignore built ts files
+dist/**/*
+
+# Dependency directory
 node_modules
-dist/
+bower_components
