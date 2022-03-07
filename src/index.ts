@@ -2,6 +2,10 @@ import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import mikroConfig from "./mikro-orm.config";
 import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { HelloResolver } from "./resolvers/hello";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
@@ -9,9 +13,18 @@ const main = async () => {
 
   const app = express();
 
-  app.get("/", (req, res) => {
-    res.json({ message: "Hello World" });
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver, PostResolver],
+      validate: false,
+    }),
+    // Expose objects to resolver
+    context: () => ({ em: orm.em }),
   });
+  await apolloServer.start();
+
+  // Create /graphql endpoint
+  apolloServer.applyMiddleware({ app });
 
   app.listen(4000, () => {
     console.log("server started on localhost:4000");
